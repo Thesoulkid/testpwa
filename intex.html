@@ -1,54 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demo PWA — Installable Web App</title>
 
-  <!-- PWA manifest -->
+  <!-- Manifest -->
   <link rel="manifest" href="/manifest.json">
 
-  <!-- Android / general meta -->
-  <meta name="theme-color" content="#3f51b5">
-
-  <!-- iOS specific: enable standalone mode and provide icons -->
+  <!-- iOS meta -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Demo PWA">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <!-- Provide apple-touch-icon 180x180 -->
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180.png">
 
-  <style>
-    :root{--accent:#3f51b5}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;padding:0;display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f2f4f8}
-    .card{width:360px;background:#fff;padding:22px;border-radius:8px;box-shadow:0 8px 24px rgba(30,30,60,0.06);text-align:center}
-    h1{margin:0 0 8px;font-size:20px;color:var(--accent)}
-    p{color:#444}
-    button{margin-top:14px;padding:10px 14px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600}
-    #installBtn{display:none}
-    .hint{margin-top:12px;color:#666;font-size:0.9rem}
-    .ios-instructions{display:none;background:#fff8e6;border:1px solid #ffdca6;padding:10px;border-radius:6px;margin-top:12px;text-align:left}
-    .show{display:block}
-  </style>
+  <!-- Theme color -->
+  <meta name="theme-color" content="#3f51b5">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="card">
-    <h1>Demo PWA — Installable Web App</h1>
-    <p>Use this page to test PWA install flow on Android and "Add to Home Screen" instructions for iOS.</p>
+  <div class="pwa-card card">
+    <h1>Demo PWA</h1>
+    <p>This page demonstrates how a web app can behave like a native app.</p>
 
     <button id="installBtn">Install app</button>
 
     <div class="hint">
-      On Android Chrome: you should either see a browser install prompt (three-dot menu → Install app) or you can tap the blue button above.<br>
-      On iPhone: follow the instructions shown below.
+      On Android: tap the three-dot menu or the Install button.<br>
+      On iOS: follow the instructions below.
     </div>
 
     <div id="iosInstr" class="ios-instructions" role="note" aria-live="polite">
-      <strong>To install on iPhone / iPad:</strong>
+      <strong>iPhone / iPad instructions:</strong>
       <ol>
-        <li>Tap the Share icon (the square with an arrow).</li>
-        <li>Choose <em>Add to Home Screen</em>.</li>
-        <li>Tap Add — the site will behave like an app.</li>
+        <li>Tap the Share icon (square with arrow)</li>
+        <li>Select <em>Add to Home Screen</em></li>
+        <li>Tap Add — it will launch like an app</li>
       </ol>
     </div>
   </div>
@@ -56,38 +45,37 @@
   <script>
     // Register service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(e => console.warn('SW register failed', e));
+      navigator.serviceWorker.register('/sw.js').catch(console.warn);
     }
 
-    // beforeinstallprompt handling (Android/Chrome)
+    // Android install prompt
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
-
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
       deferredPrompt = e;
-      // Show our own install button
       installBtn.style.display = 'inline-block';
     });
 
     installBtn.addEventListener('click', async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      // choice.outcome is 'accepted' or 'dismissed'
-      console.log('User choice', choice);
-      deferredPrompt = null;
-      installBtn.style.display = 'none';
+      deferredPrompt.userChoice.then(choice => {
+        console.log('User choice:', choice.outcome);
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      });
     });
 
-    // iOS detection: show instruction box (because iOS doesn't support beforeinstallprompt)
+    // iOS detection
     const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
     const isInStandaloneMode = ('standalone' in window.navigator) && window.navigator.standalone;
-
     if (isIos && !isInStandaloneMode) {
       document.getElementById('iosInstr').classList.add('show');
     }
   </script>
+</body>
+</html>
+
 </body>
 </html>
