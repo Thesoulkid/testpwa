@@ -1,0 +1,70 @@
+/* General reset */
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+  background:#fafafa;
+  color:#222;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+}
+
+/* Card style */
+.card{
+  width:360px;
+  background:#fff;
+  padding:28px;
+  border:1px solid #dbdbdb;
+  margin-top:20px;
+  border-radius:6px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(30,30,60,0.04);
+}
+
+/* PWA Demo */
+.pwa-card h1{margin:0 0 8px;font-size:20px;color:#3f51b5;}
+.pwa-card p{color:#444;}
+.hint{margin-top:12px;color:#666;font-size:0.95rem;}
+button, .btn{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  background:#3f51b5;
+  border:none;
+  color:white;
+  border-radius:6px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* iOS instruction box */
+.ios-instructions{
+  display:none;
+  background:#fff8e6;
+  border:1px solid #ffdca6;
+  padding:10px;
+  border-radius:6px;
+  margin-top:12px;
+  text-align:left;
+}
+.ios-instructions.show{display:block;}
+
+/* Admin */
+.admin-card{max-width:820px;text-align:left;}
+.entry{
+  padding:12px;
+  border:1px dashed #eee;
+  margin:10px 0;
+  background:#fafafa;
+  border-radius:6px;
+  font-size:13px;
+  color:#222;
+}
+
+/* Responsive */
+@media(max-width:420px){
+  .card,.pwa-card{width:92%;}
+}
