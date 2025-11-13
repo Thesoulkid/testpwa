@@ -2,32 +2,27 @@ const CACHE_NAME = 'demo-pwa-v1';
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
+  '/admin.html',
   '/manifest.json',
-  '/style.css',   // optional if you add CSS file
+  '/style.css',
   '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-512.png',
+  '/icons/apple-touch-icon-180.png'
 ];
 
-self.addEventListener('install', (evt) => {
-  evt.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
-  );
+self.addEventListener('install', evt => {
+  evt.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE)));
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (evt) => {
+self.addEventListener('activate', evt => {
   evt.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('fetch', (evt) => {
-  // network-first for navigation, else cache-first
-  if (evt.request.mode === 'navigate') {
-    evt.respondWith(
-      fetch(evt.request).catch(() => caches.match('/index.html'))
-    );
+self.addEventListener('fetch', evt => {
+  if(evt.request.mode === 'navigate'){
+    evt.respondWith(fetch(evt.request).catch(() => caches.match('/index.html')));
     return;
   }
-  evt.respondWith(
-    caches.match(evt.request).then(resp => resp || fetch(evt.request))
-  );
+  evt.respondWith(caches.match(evt.request).then(resp => resp || fetch(evt.request)));
 });
